@@ -227,6 +227,12 @@ function renderRecipeCards(recipes) {
     const total = usedCount + missedCount;
     const matchPercent = total > 0 ? Math.round((usedCount / total) * 100) : 0;
 
+    // 💡 API에서 영양소 데이터를 받아온다고 가정한 변수 처리 (데이터가 없으면 '-' 표시)
+    const calories = recipe.calories ? `${recipe.calories}kcal` : '정보 없음';
+    const protein = recipe.protein ? `${recipe.protein}g` : '-';
+    const carbs = recipe.carbs ? `${recipe.carbs}g` : '-';
+    const fat = recipe.fat ? `${recipe.fat}g` : '-';
+
     const card = document.createElement('div');
     card.className = 'recipe-card';
     card.style.animationDelay = `${idx * 0.06}s`;
@@ -237,6 +243,15 @@ function renderRecipeCards(recipes) {
       </div>
       <div class="card-body">
         <div class="card-title">${recipe.title}</div>
+        
+        <!-- 💡 새롭게 추가된 영양 정보 영역 -->
+        <div class="nutrition-info">
+          <span class="nutri-badge calories">🔥 ${calories}</span>
+          <span class="nutri-badge">단백질 ${protein}</span>
+          <span class="nutri-badge">탄수화물 ${carbs}</span>
+          <span class="nutri-badge">지방 ${fat}</span>
+        </div>
+
         <div class="card-label">가지고 있는 재료 (${usedCount})</div>
         <div class="chips">
           ${(recipe.usedIngredients || []).map(i => `<span class="chip-have">✓ ${i.name}</span>`).join('')}
