@@ -1,4 +1,6 @@
-const QUICK_INGREDIENTS = ["egg","onion","garlic","potato","tomato","cheese","chicken","mushroom"];
+// 변경 전: const QUICK_INGREDIENTS = [...]
+// 변경 후:
+let QUICK_INGREDIENTS = ["egg","onion","garlic","potato","tomato","cheese","chicken","mushroom"];
 
 const AUTOCOMPLETE_POOL = [
   "egg","onion","garlic","potato","tomato","cheese","chicken","mushroom",
