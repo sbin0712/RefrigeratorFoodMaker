@@ -23,6 +23,10 @@ const resultTitle = document.getElementById('resultTitle');
 const resultSub = document.getElementById('resultSub');
 
 function icon(ing) {
+  // INGREDIENT_ICONS가 정의되지 않았을 경우를 대비한 안전 장치
+  if (typeof INGREDIENT_ICONS === 'undefined') {
+    return "🍽️";
+  }
   return INGREDIENT_ICONS[ing.toLowerCase()] || "🍽️";
 }
 
