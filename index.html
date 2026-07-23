@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>냉장고 파먹기</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-left">
+    <span class="icon">🔍</span>
+    <h1>냉장고 파먹기</h1>
+  </div>
+  <div class="topbar-right">재료를 입력하면 레시피를 찾아드려요</div>
+</header>
+
+<main id="mainView">
+  <section class="input-card">
+    <h2>냉장고 재료 입력</h2>
+    <div id="tagList" class="tag-list"></div>
+    <div class="input-row">
+      <input id="ingredientInput" type="text" placeholder="예: 계란, 양파, 김치...">
+      <button id="addBtn" class="btn-outline">+ 추가</button>
+    </div>
+    <div class="quick-label">자주 쓰는 재료</div>
+    <div id="quickTags" class="quick-tags"></div>
+    <div class="action-row">
+      <button id="findBtn" class="btn-primary">🍳 <span id="findBtnText">재료로 요리 찾기</span></button>
+      <button id="resetBtn" class="btn-outline">초기화</button>
+    </div>
+  </section>
+
+  <section class="result-section">
+    <h2 id="resultTitle">추천 레시피 0개</h2>
+    <p class="result-sub" id="resultSub">재료를 입력하면 추천 레시피가 여기에 표시돼요</p>
+    <div id="recipeGrid" class="recipe-grid"></div>
+  </section>
+</main>
+
+<div id="detailView" class="detail-view hidden">
+  <button id="backBtn" class="back-btn">← 목록으로</button>
+  <div id="detailContent"></div>
+</div>
+
+<script src="recipes.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
