@@ -244,12 +244,12 @@ function renderRecipeCards(recipes) {
       <div class="card-body">
         <div class="card-title">${recipe.title}</div>
         
-        <!-- 💡 새롭게 추가된 영양 정보 영역 -->
+       <!-- 💡 새롭게 추가된 영양 정보 영역 -->
         <div class="nutrition-info">
           <span class="nutri-badge calories">🔥 ${calories}</span>
-          <span class="nutri-badge">단백질 ${protein}</span>
-          <span class="nutri-badge">탄수화물 ${carbs}</span>
-          <span class="nutri-badge">지방 ${fat}</span>
+          <span class="nutri-badge protein">단백질 ${protein}</span>
+          <span class="nutri-badge carbs">탄수화물 ${carbs}</span>
+          <span class="nutri-badge fat">지방 ${fat}</span>
         </div>
 
         <div class="card-label">가지고 있는 재료 (${usedCount})</div>
