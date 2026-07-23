@@ -54,11 +54,17 @@ function renderTags() {
 
 function renderQuickTags() {
   quickTags.innerHTML = '';
+  
+  // 1. 기존 재료들을 칩 형태로 렌더링
   QUICK_INGREDIENTS.forEach(ing => {
-    const btn = document.createElement('button');
-    btn.className = 'quick-tag' + (selectedIngredients.includes(ing) ? ' selected' : '');
-    btn.textContent = ing;
-    btn.onclick = () => {
+    const chip = document.createElement('div');
+    // 선택되었을 때 'selected' 클래스 추가
+    chip.className = 'chip' + (selectedIngredients.includes(ing) ? ' selected' : '');
+    chip.innerHTML = `${ing}<button class="chip-remove" data-ing="${ing}">×</button>`;
+    
+    // 칩 클릭 시: 검색할 재료에 추가/해제 (x버튼 클릭 제외)
+    chip.onclick = (e) => {
+      if (e.target.classList.contains('chip-remove')) return; 
       if (selectedIngredients.includes(ing)) {
         selectedIngredients = selectedIngredients.filter(i => i !== ing);
       } else {
@@ -67,8 +73,39 @@ function renderQuickTags() {
       renderTags();
       renderQuickTags();
     };
-    quickTags.appendChild(btn);
+
+    // x 버튼 클릭 시: 자주 쓰는 재료 목록에서 아예 삭제
+    chip.querySelector('.chip-remove').onclick = (e) => {
+      e.stopPropagation(); // 부모(chip)의 클릭 이벤트 실행 방지
+      QUICK_INGREDIENTS = QUICK_INGREDIENTS.filter(i => i !== ing);
+      // 만약 이미 선택된 상태였다면 검색 목록에서도 빼주기
+      selectedIngredients = selectedIngredients.filter(i => i !== ing);
+      renderTags();
+      renderQuickTags();
+    };
+
+    quickTags.appendChild(chip);
   });
+
+  // 2. [ + 추가 ] 버튼 만들기
+  const addBtn = document.createElement('button');
+  addBtn.className = 'plus-frequent-dotted';
+  addBtn.textContent = '+ 추가';
+  addBtn.onclick = () => {
+    const newIng = prompt("자주 쓰는 재료를 입력하세요 (예: beef, carrot):");
+    if (newIng && newIng.trim() !== "") {
+      const trimmed = newIng.trim().toLowerCase();
+      // 중복 방지 로직
+      if (!QUICK_INGREDIENTS.includes(trimmed)) {
+        QUICK_INGREDIENTS.push(trimmed);
+        renderQuickTags();
+      } else {
+        alert("이미 등록된 재료입니다!");
+      }
+    }
+  };
+  
+  quickTags.appendChild(addBtn);
 }
 
 
