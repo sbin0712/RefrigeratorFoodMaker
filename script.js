@@ -181,8 +181,28 @@ async function fetchRecipes() {
       return;
     }
 
+    // --- 💡 추가된 정렬 로직 ---
+    data.sort((a, b) => {
+      // a의 매칭률 계산
+      const aUsed = a.usedIngredientCount || 0;
+      const aMissed = a.missedIngredientCount || 0;
+      const aTotal = aUsed + aMissed;
+      const aPercent = aTotal > 0 ? (aUsed / aTotal) : 0;
+
+      // b의 매칭률 계산
+      const bUsed = b.usedIngredientCount || 0;
+      const bMissed = b.missedIngredientCount || 0;
+      const bTotal = bUsed + bMissed;
+      const bPercent = bTotal > 0 ? (bUsed / bTotal) : 0;
+
+      // 매칭률(%)이 높은 순(내림차순)으로 정렬
+      return bPercent - aPercent;
+    });
+    // ---------------------------
+
     resultTitle.textContent = `추천 레시피 ${data.length}개`;
-    resultSub.textContent = '가지고 있는 재료 순으로 정렬했어요';
+    // 안내 텍스트도 정렬 기준에 맞게 수정
+    resultSub.textContent = '매칭률이 높은 순으로 정렬했어요'; 
     renderRecipeCards(data);
   } catch (err) {
     showErrorState();
