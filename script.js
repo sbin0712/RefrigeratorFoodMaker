@@ -1,10 +1,21 @@
 const QUICK_INGREDIENTS = ["egg","onion","garlic","kimchi","tofu","scallion","potato","carrot"];
+const INGREDIENT_ICONS = {
+  egg: "🥚", onion: "🧅", garlic: "🧄", kimchi: "🥬",
+  tofu: "🧊", scallion: "🌿", potato: "🥔", carrot: "🥕"
+};
+const AUTOCOMPLETE_POOL = [
+  "egg","onion","garlic","kimchi","tofu","scallion","potato","carrot",
+  "beef","pork","chicken","rice","spinach","mushroom","zucchini",
+  "cabbage","cheese","milk","butter","tomato","cucumber","noodle"
+];
+
 let selectedIngredients = [];
 let hasSearched = false;
 
 const tagList = document.getElementById('tagList');
 const quickTags = document.getElementById('quickTags');
 const ingredientInput = document.getElementById('ingredientInput');
+const autocompleteList = document.getElementById('autocompleteList');
 const addBtn = document.getElementById('addBtn');
 const findBtn = document.getElementById('findBtn');
 const findBtnText = document.getElementById('findBtnText');
@@ -13,12 +24,16 @@ const recipeGrid = document.getElementById('recipeGrid');
 const resultTitle = document.getElementById('resultTitle');
 const resultSub = document.getElementById('resultSub');
 
+function icon(ing) {
+  return INGREDIENT_ICONS[ing.toLowerCase()] || "🍽️";
+}
+
 function renderTags() {
   tagList.innerHTML = '';
   selectedIngredients.forEach(ing => {
     const el = document.createElement('div');
     el.className = 'tag';
-    el.innerHTML = `<span>${ing}</span><button data-ing="${ing}">✕</button>`;
+    el.innerHTML = `<span>${icon(ing)} ${ing}</span><button data-ing="${ing}">✕</button>`;
     tagList.appendChild(el);
   });
   tagList.querySelectorAll('button').forEach(btn => {
@@ -38,7 +53,7 @@ function renderQuickTags() {
   QUICK_INGREDIENTS.forEach(ing => {
     const btn = document.createElement('button');
     btn.className = 'quick-tag' + (selectedIngredients.includes(ing) ? ' selected' : '');
-    btn.textContent = ing;
+    btn.textContent = `${icon(ing)} ${ing}`;
     btn.onclick = () => {
       if (selectedIngredients.includes(ing)) {
         selectedIngredients = selectedIngredients.filter(i => i !== ing);
@@ -52,18 +67,46 @@ function renderQuickTags() {
   });
 }
 
-function addIngredient() {
-  const val = ingredientInput.value.trim();
+function addIngredient(value) {
+  const val = (value !== undefined ? value : ingredientInput.value).trim();
   if (!val) return;
   val.split(',').map(s => s.trim()).filter(Boolean).forEach(v => {
     if (!selectedIngredients.includes(v)) selectedIngredients.push(v);
   });
   ingredientInput.value = '';
+  hideAutocomplete();
   renderTags();
   renderQuickTags();
 }
 
-addBtn.onclick = addIngredient;
+function showAutocomplete() {
+  const val = ingredientInput.value.trim().toLowerCase();
+  if (!val) { hideAutocomplete(); return; }
+  const matches = AUTOCOMPLETE_POOL.filter(i =>
+    i.toLowerCase().includes(val) && !selectedIngredients.includes(i)
+  ).slice(0, 6);
+  if (matches.length === 0) { hideAutocomplete(); return; }
+  autocompleteList.innerHTML = matches.map(m =>
+    `<div class="autocomplete-item" data-val="${m}">${icon(m)} ${m}</div>`
+  ).join('');
+  autocompleteList.classList.remove('hidden');
+  autocompleteList.querySelectorAll('.autocomplete-item').forEach(item => {
+    item.onclick = () => addIngredient(item.dataset.val);
+  });
+}
+
+function hideAutocomplete() {
+  autocompleteList.classList.add('hidden');
+  autocompleteList.innerHTML = '';
+}
+
+ingredientInput.addEventListener('input', showAutocomplete);
+ingredientInput.addEventListener('focus', showAutocomplete);
+document.addEventListener('click', e => {
+  if (!e.target.closest('.autocomplete-wrap')) hideAutocomplete();
+});
+
+addBtn.onclick = () => addIngredient();
 ingredientInput.addEventListener('keydown', e => {
   if (e.key === 'Enter') addIngredient();
 });
@@ -83,25 +126,59 @@ findBtn.onclick = () => {
 };
 
 function showIdleState() {
-  recipeGrid.innerHTML = '<div class="empty-state">재료를 담고 "요리 찾기" 버튼을 눌러보세요 🍽️</div>';
+  recipeGrid.innerHTML = `
+    <div class="empty-state">
+      <span class="empty-emoji">🍽️</span>
+      재료를 담고 "요리 찾기" 버튼을 눌러보세요
+    </div>`;
   resultTitle.textContent = '추천 레시피';
   resultSub.textContent = '재료를 입력하고 찾기 버튼을 누르면 추천 레시피가 여기에 표시돼요';
 }
 
-async function fetchRecipes() {
-  recipeGrid.innerHTML = '<div class="empty-state">레시피를 찾는 중이에요... 🔎</div>';
+function showLoadingState() {
+  recipeGrid.innerHTML = `
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <div class="loading-text">레시피를 찾는 중이에요...</div>
+    </div>`;
   resultTitle.textContent = '검색 중...';
   resultSub.textContent = '';
+}
 
+function showEmptyResultState() {
+  recipeGrid.innerHTML = `
+    <div class="empty-state">
+      <span class="empty-emoji">🙁</span>
+      일치하는 레시피가 없어요. 다른 재료를 입력해보세요
+      <div><button class="empty-retry" id="retryBtn">재료 다시 입력하기</button></div>
+    </div>`;
+  resultTitle.textContent = '추천 레시피 0개';
+  resultSub.textContent = '';
+  document.getElementById('retryBtn').onclick = () => {
+    resetBtn.click();
+    ingredientInput.focus();
+  };
+}
+
+function showErrorState() {
+  recipeGrid.innerHTML = `
+    <div class="empty-state">
+      <span class="empty-emoji">😢</span>
+      레시피를 불러오지 못했어요. 잠시 후 다시 시도해주세요
+    </div>`;
+  resultTitle.textContent = '오류 발생';
+  resultSub.textContent = '';
+}
+
+async function fetchRecipes() {
+  showLoadingState();
   try {
     const query = selectedIngredients.join(',');
     const res = await fetch(`/api/recipes?ingredients=${encodeURIComponent(query)}`);
     const data = await res.json();
 
     if (!Array.isArray(data) || data.length === 0) {
-      recipeGrid.innerHTML = '<div class="empty-state">일치하는 레시피가 없어요. 다른 재료를 입력해보세요 🙁</div>';
-      resultTitle.textContent = '추천 레시피 0개';
-      resultSub.textContent = '';
+      showEmptyResultState();
       return;
     }
 
@@ -109,10 +186,14 @@ async function fetchRecipes() {
     resultSub.textContent = '가지고 있는 재료 순으로 정렬했어요';
     renderRecipeCards(data);
   } catch (err) {
-    recipeGrid.innerHTML = '<div class="empty-state">레시피를 불러오지 못했어요. 잠시 후 다시 시도해주세요 😢</div>';
-    resultTitle.textContent = '오류 발생';
-    resultSub.textContent = '';
+    showErrorState();
   }
+}
+
+function matchClass(percent) {
+  if (percent >= 80) return 'match-high';
+  if (percent >= 50) return 'match-mid';
+  return 'match-low';
 }
 
 function renderRecipeCards(recipes) {
@@ -125,10 +206,11 @@ function renderRecipeCards(recipes) {
 
     const card = document.createElement('div');
     card.className = 'recipe-card';
+    card.style.animationDelay = `${idx * 0.06}s`;
     card.innerHTML = `
       <div class="card-img" style="background-image:url('${recipe.image}')">
         ${idx === 0 ? '<span class="badge-best">★ 최고 매칭</span>' : '<span></span>'}
-        <span class="badge-match">${matchPercent}%</span>
+        <span class="badge-match ${matchClass(matchPercent)}">${matchPercent}%</span>
       </div>
       <div class="card-body">
         <div class="card-title">${recipe.title}</div>
