@@ -33,7 +33,7 @@ function renderTags() {
   selectedIngredients.forEach(ing => {
     const el = document.createElement('div');
     el.className = 'tag';
-    el.innerHTML = `<span>${icon(ing)} ${ing}</span><button data-ing="${ing}">✕</button>`;
+    el.innerHTML = `<span>${ing}</span><button data-ing="${ing}">✕</button>`;
     tagList.appendChild(el);
   });
   tagList.querySelectorAll('button').forEach(btn => {
@@ -53,7 +53,7 @@ function renderQuickTags() {
   QUICK_INGREDIENTS.forEach(ing => {
     const btn = document.createElement('button');
     btn.className = 'quick-tag' + (selectedIngredients.includes(ing) ? ' selected' : '');
-    btn.textContent = `${icon(ing)} ${ing}`;
+    btn.textContent = ing;
     btn.onclick = () => {
       if (selectedIngredients.includes(ing)) {
         selectedIngredients = selectedIngredients.filter(i => i !== ing);
@@ -66,6 +66,7 @@ function renderQuickTags() {
     quickTags.appendChild(btn);
   });
 }
+
 
 function addIngredient(value) {
   const val = (value !== undefined ? value : ingredientInput.value).trim();
