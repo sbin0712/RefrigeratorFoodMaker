@@ -1,16 +1,6 @@
+
 const QUICK_INGREDIENTS = ["계란","양파","마늘","김치","두부","대파","감자","당근"];
 let selectedIngredients = [];
-
-const CATEGORY_STYLE = {
-  "볶음": { emoji: "🍳", grad: "linear-gradient(135deg, #ff9a56, #ff6b6b)" },
-  "밑반찬": { emoji: "🥗", grad: "linear-gradient(135deg, #56ab7f, #3b8f6e)" },
-  "국물": { emoji: "🍲", grad: "linear-gradient(135deg, #4facfe, #667eea)" },
-  "면류": { emoji: "🍜", grad: "linear-gradient(135deg, #f6d365, #fda085)" },
-  "밥류": { emoji: "🍚", grad: "linear-gradient(135deg, #a8edea, #5ec6a7)" }
-};
-function catStyle(cat) {
-  return CATEGORY_STYLE[cat] || { emoji: "🍽️", grad: "linear-gradient(135deg, #9ca3af, #4b5563)" };
-}
 
 const tagList = document.getElementById('tagList');
 const quickTags = document.getElementById('quickTags');
@@ -131,17 +121,15 @@ function computeResults() {
   recipeGrid.innerHTML = '';
   scored.forEach((item, idx) => {
     const { recipe, match } = item;
-    const style = catStyle(recipe.category);
     const card = document.createElement('div');
     card.className = 'recipe-card';
     card.innerHTML = `
-      <div class="card-img" style="background:${style.grad}">
-        <span class="card-emoji">${style.emoji}</span>
+      <div class="card-img">
         ${idx === 0 && match.canCook ? '<span class="badge-best">★ 최고 매칭</span>' : '<span></span>'}
         <span class="badge-match">${match.matchPercent}%</span>
       </div>
       <div class="card-body">
-        <div class="card-title">${recipe.name}</div>
+        <div class="card-title">🔍 ${recipe.name}</div>
         <div class="card-desc">${recipe.desc}</div>
         <div class="card-label">필수 재료</div>
         <div class="chips">
@@ -167,34 +155,20 @@ function computeResults() {
 
 function showDetail(recipe) {
   const match = matchRecipe(recipe);
-  const style = catStyle(recipe.category);
   mainView.style.display = 'none';
   detailView.classList.remove('hidden');
-
-  const shownTips = new Set();
-  const stepsHtml = recipe.steps.map((step, i) => {
-    let tipHtml = '';
-    const tipEntry = Object.entries(recipe.tips).find(([ing]) => step.includes(ing) && !shownTips.has(ing));
-    if (tipEntry) {
-      shownTips.add(tipEntry[0]);
-      tipHtml = `<div class="tip-box">💡 '${tipEntry[0]}' 없다면? ${tipEntry[1]}</div>`;
-    }
-    return `<li class="step-item"><div class="step-num">${i + 1}</div><div class="step-text">${step}</div></li>${tipHtml}`;
-  }).join('');
-
   detailContent.innerHTML = `
-    <div class="detail-hero" style="background:${style.grad}"><span class="hero-emoji">${style.emoji}</span></div>
+    <div class="detail-hero"></div>
     <div class="detail-card">
       <div class="detail-tags">
         <span class="tag-category">${recipe.category}</span>
         <span class="tag-diff">${recipe.difficulty}</span>
       </div>
-      <div class="detail-title">${recipe.name}</div>
-      <p class="detail-desc">${recipe.desc}</p>
+      <div class="detail-title">🔍 ${recipe.name}</div>
       <div class="stat-row">
-        <div class="stat-box"><div class="stat-num">⏱ ${recipe.time}분</div><div class="stat-label">조리시간</div></div>
-        <div class="stat-box"><div class="stat-num">👥 ${recipe.servings}인분</div><div class="stat-label">인원</div></div>
-        <div class="stat-box"><div class="stat-num">🔥 ${recipe.kcal}kcal</div><div class="stat-label">칼로리</div></div>
+        <div class="stat-box"><div class="stat-num">${recipe.time}분</div><div class="stat-label">조리시간</div></div>
+        <div class="stat-box"><div class="stat-num">${recipe.servings}인분</div><div class="stat-label">인원</div></div>
+        <div class="stat-box"><div class="stat-num">${recipe.kcal}kcal</div><div class="stat-label">칼로리</div></div>
       </div>
       <div class="section-title">● 필수 재료 <span class="section-sub">— 없으면 요리가 안 돼요</span></div>
       <div class="ing-row">
@@ -207,8 +181,17 @@ function showDetail(recipe) {
         ${recipe.optional.map(o => `<span class="ing-optional">${o}</span>`).join('')}
       </div>
       <div class="ing-note">회색 재료는 없어도 되지만 있으면 훨씬 맛있어요</div>
-      <div class="section-title">🍳 조리 순서</div>
-      <ol class="steps">${stepsHtml}</ol>
+      <div class="section-title">조리 순서</div>
+      <ol class="steps">
+        ${recipe.steps.map((step, i) => {
+          const tipEntry = Object.entries(recipe.tips).find(([ing]) => step.includes(ing));
+          let tipHtml = '';
+          if (tipEntry) {
+            tipHtml = `<div class="tip-box">💡 '${tipEntry[0]}' 없다면? ${tipEntry[1]}</div>`;
+          }
+          return `<li class="step-item"><div class="step-num">${i + 1}</div><div class="step-text">${step}</div></li>${tipHtml}`;
+        }).join('')}
+      </ol>
       <div class="cook-tip">💡 <b>요리 팁</b><br>${recipe.cookTip}</div>
     </div>
   `;
