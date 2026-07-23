@@ -315,3 +315,70 @@ main { max-width: 920px; margin: 28px auto; padding: 0 16px; }
   background-color: #ffe8e8; /* 연한 붉은색 배경 */
   color: #e03131;           
 }
+
+/* --- 자주 쓰는 재료 (칩) 디자인 추가 --- */
+.chip {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 8px 15px;
+  font-size: 14px;
+  color: #333;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  padding-right: 35px; /* x 버튼 들어갈 공간 확보 */
+  margin: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* 선택된 칩의 색상 */
+.chip.selected {
+  background-color: #2fb467;
+  color: white;
+  border-color: #2fb467;
+}
+
+/* x 삭제 버튼 */
+.chip-remove {
+  position: absolute;
+  right: 8px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #ff4d4f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.chip-remove:hover {
+  background-color: rgba(255, 77, 79, 0.1);
+}
+
+.chip.selected .chip-remove {
+  color: #ffcccc; /* 초록 배경일 때 x 버튼 색상 변경 */
+}
+
+/* + 추가 버튼 (점선) */
+.plus-frequent-dotted {
+  background-color: transparent;
+  border: 1px dashed #a2a2a2;
+  color: #666;
+  border-radius: 25px;
+  padding: 8px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  margin: 4px;
+  transition: all 0.2s;
+}
+
+.plus-frequent-dotted:hover {
+  border-color: #666;
+  background-color: #f7f3ee;
+}
