@@ -293,8 +293,8 @@ main { max-width: 920px; margin: 28px auto; padding: 0 16px; }
 
 /* 칼로리는 특별히 눈에 띄게! */
 .nutri-badge.calories {
-  background-color: #ffe8e8; /* 연한 붉은색 배경 */
-  color: #e03131;
+  background-color: #ffe8cc; /* 연한 주황색 배경 */
+  color: #d9480f; 
   font-weight: bold;
 }
 
@@ -310,8 +310,8 @@ main { max-width: 920px; margin: 28px auto; padding: 0 16px; }
   color: #155724;            /* 어두운 초록색 텍스트 */
 }
 
-/* 지방 (주황색) */
+/* 지방 (붉은색) */
 .nutri-badge.fat {
-  background-color: #ffe8cc; /* 연한 주황색 배경 */
-  color: #d9480f;            /* 어두운 주황색 텍스트 */
+  background-color: #ffe8e8; /* 연한 붉은색 배경 */
+  color: #e03131;           
 }
