@@ -11,9 +11,7 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 18px 28px;
-  /* 💡 아래부분(.hero)과 이어지도록 그라데이션 시작 색상 적용 */
-  background: #1a7f4b; 
-  /* 💡 원래 있던 box-shadow(그림자)를 지워야 경계선이 사라져서 하나로 보입니다! */
+  background: #56d190; /* 💡 가장 밝은 초록색으로 시작 */
 }
 .topbar-left { display: flex; align-items: center; gap: 10px; }
 .topbar-left h1 { font-size: 19px; margin: 0; color: #fff; letter-spacing: -0.3px; }
@@ -25,8 +23,8 @@ body {
 }
 
 .hero {
-  /* 💡 위쪽(.topbar)의 단색에서 시작해서 아래로 내려오는 그라데이션 적용 */
-  background: linear-gradient(180deg, #1a7f4b 0%, #2fa968 60%, #56d190 100%);
+  /* 💡 밝은 색(#56d190)에서 시작해 어두운 색(#1a7f4b)으로 내려오게 순서 변경 */
+  background: linear-gradient(180deg, #56d190 0%, #2fa968 60%, #1a7f4b 100%);
   padding: 48px 20px;
   text-align: center;
   color: #fff;
@@ -148,7 +146,7 @@ main { max-width: 920px; margin: 28px auto; padding: 0 16px; }
 .action-row { display: flex; gap: 10px; margin-top: 22px; }
 .btn-primary {
   flex: 1;
-  background: linear-gradient(135deg, #1a7f4b, #2fa968);
+  background: #1a7f4b; /* 💡 그라데이션을 지우고 깔끔한 단색 진초록으로 변경 */
   color: #fff;
   border: none;
   border-radius: 12px;
