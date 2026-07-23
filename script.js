@@ -1,13 +1,11 @@
-const QUICK_INGREDIENTS = ["egg","onion","garlic","kimchi","tofu","scallion","potato","carrot"];
-const INGREDIENT_ICONS = {
-  egg: "🥚", onion: "🧅", garlic: "🧄", kimchi: "🥬",
-  tofu: "🧊", scallion: "🌿", potato: "🥔", carrot: "🥕"
-};
+const QUICK_INGREDIENTS = ["egg","onion","garlic","potato","tomato","cheese","chicken","mushroom"];
+
 const AUTOCOMPLETE_POOL = [
-  "egg","onion","garlic","kimchi","tofu","scallion","potato","carrot",
-  "beef","pork","chicken","rice","spinach","mushroom","zucchini",
-  "cabbage","cheese","milk","butter","tomato","cucumber","noodle"
+  "egg","onion","garlic","potato","tomato","cheese","chicken","mushroom",
+  "beef","pork","rice","spinach","zucchini","cabbage","milk","butter",
+  "cucumber","noodle","carrot","bell pepper","lemon","basil","olive oil","flour"
 ];
+
 
 let selectedIngredients = [];
 let hasSearched = false;
