@@ -11,16 +11,22 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 18px 28px;
-  background: linear-gradient(90deg, #1a7f4b, #2fa968);
-  box-shadow: 0 2px 10px rgba(26,127,75,0.25);
+  /* 💡 아래부분(.hero)과 이어지도록 그라데이션 시작 색상 적용 */
+  background: #1a7f4b; 
+  /* 💡 원래 있던 box-shadow(그림자)를 지워야 경계선이 사라져서 하나로 보입니다! */
 }
 .topbar-left { display: flex; align-items: center; gap: 10px; }
 .topbar-left h1 { font-size: 19px; margin: 0; color: #fff; letter-spacing: -0.3px; }
 .icon { font-size: 20px; }
-.topbar-right { font-size: 13px; color: rgba(255,255,255,0.85); }
+.topbar-right { 
+  font-size: 14px; /* 글자를 살짝 키움 */
+  color: #ffffff;  /* 투명도 없애고 완전 하얀색으로 */
+  font-weight: 700; /* 💡 굵은 글씨 적용! */
+}
 
 .hero {
-  background: linear-gradient(135deg, #1a7f4b, #2fa968 60%, #56d190);
+  /* 💡 위쪽(.topbar)의 단색에서 시작해서 아래로 내려오는 그라데이션 적용 */
+  background: linear-gradient(180deg, #1a7f4b 0%, #2fa968 60%, #56d190 100%);
   padding: 48px 20px;
   text-align: center;
   color: #fff;
@@ -381,21 +387,4 @@ main { max-width: 920px; margin: 28px auto; padding: 0 16px; }
 .plus-frequent-dotted:hover {
   border-color: #666;
   background-color: #f7f3ee;
-}
-
-/* 1. 상단 네비게이션 바 배경을 투명하게 만들어 하단 그라데이션과 자연스럽게 연결 */
-.navbar, .top-bar, header .nav-container {
-  background: transparent !important; /* 상단 바의 단색 배경 제거 */
-}
-
-/* 헤더 전체 영역에 통일된 그라데이션 적용 */
-header, .header-section {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important; /* 초록 그라데이션 */
-}
-
-/* 2. "재료를 입력하면 레시피를 찾아드려요" 글자 굵게 만들기 */
-.header-desc, .nav-text, header .subtitle, .top-bar span {
-  font-weight: 700 !important; /* 글자 굵게 (Bold) */
-  font-size: 0.95rem;          /* 필요시 글자 크기 살짝 조정 */
-  opacity: 1 !important;        /* 흐릿하지 않고 선명하게 표시 */
 }
